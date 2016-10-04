@@ -13,7 +13,6 @@ public class Chat implements Serializable{
     private String desc;
     private String author;
     private Map<String,String> groupUser;
-    //probleme avec l'objet USER :(
     private Map<String,Message> messages;
     private int categorieChat;
     private boolean status;
@@ -34,20 +33,7 @@ public class Chat implements Serializable{
         setAccess(access);
         setGroupUser(groupUser);
     }
-/*
-    public Chat(String name, String desc, Map<String, User> groupUser, Map<String,Message> messages, int categorieChat, boolean status, boolean access, Date lastOpen, int nbrs_messages, Date created_on){
-        setName(name);
-        setDesc(desc);
-        setGroupUser(groupUser);
-        setMessages(messages);
-        setCategorieChat(categorieChat);
-        setStatus(status);
-        setAccess(access);
-        setLastOpen(lastOpen);
-        setNbrs_messages(nbrs_messages);
-        setCreated_on(created_on);
-    }
-*/
+
     //setters
     public void setName(String name){this.name=name;}
     public void setAuthor(String author){this.author=author;}

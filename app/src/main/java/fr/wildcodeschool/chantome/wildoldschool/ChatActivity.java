@@ -17,6 +17,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -36,11 +37,14 @@ public class ChatActivity extends AppCompatActivity{
     private RecyclerView recycler;
     private Map<String,String> groupUsers= new HashMap<String, String>();
     private FirebaseRecyclerAdapter<Message, MessageViewHolder> mAdapter;
+    private TextView introText;
+    private String chatName;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
+        Log.i(TAG,"What's Up ?! ");
 
         Auth = FirebaseAuth.getInstance();
         monChat = (String) getIntent().getStringExtra("chatKey");
@@ -49,10 +53,23 @@ public class ChatActivity extends AppCompatActivity{
         chatMessages = (RecyclerView) findViewById(R.id.conversation);
         editMessage = (EditText) findViewById(R.id.send_message);
         send = (Button) findViewById(R.id.send);
+        introText = (TextView) findViewById(R.id.intro);
 
         getGroupUsers();
 
-        Log.i(TAG,"HELLO "+monChat);
+        rootChat.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                chatName = dataSnapshot.child("name").getValue().toString();
+                Log.i(TAG,"Le nom du Chat est "+chatName);
+                introText.setText("Bienvenu dans le chat : "+chatName);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.i(TAG,databaseError.getMessage().toString());
+            }
+        });
 
         recycler = (RecyclerView) findViewById(R.id.conversation);
         recycler.setHasFixedSize(true);
@@ -66,19 +83,17 @@ public class ChatActivity extends AppCompatActivity{
         ) {
             @Override
             protected void populateViewHolder(MessageViewHolder viewHolder, Message model, int position) {
-                //Log.i(TAG,"mon nom est : "+groupUsers.get(model.getUid().toString()));
                 viewHolder.nameText.setText(groupUsers.get(model.getUid().toString()));
                 viewHolder.messageText.setText(model.getMessage().toString());
             }
         };
 
-        Log.i(TAG,"SET ADAPTER");
         recycler.setAdapter(mAdapter);
-
 
         send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Log.i(TAG,"Envoi message..");
                 monUser = Auth.getCurrentUser().getUid().toString();
                 monMessage = editMessage.getText().toString();
 
@@ -90,7 +105,12 @@ public class ChatActivity extends AppCompatActivity{
                 rootChatMessage = rootChatMessages.child(temp_key);
                 message = new Message(monUser,monMessage);
                 rootChatMessage.setValue(message);
+                Log.i(TAG,"c'est bon..");
 
+
+                //Efface le text du champs message aprés l'envoi de celui-ci
+                editMessage.setText("");
+                Log.i(TAG,"on nettoit..");
             }
         });
 
@@ -108,6 +128,7 @@ public class ChatActivity extends AppCompatActivity{
     }
 
     private void getGroupUsers(){
+        Log.i(TAG,"Récupérer les utilisateurs dans le chat..");
         rootChat.child("groupUser").addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {

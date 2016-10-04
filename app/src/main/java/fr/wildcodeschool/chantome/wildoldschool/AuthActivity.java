@@ -20,19 +20,18 @@ import com.google.firebase.database.FirebaseDatabase;
  */
 public class AuthActivity extends AppCompatActivity {
 
-    public String email;
-    public String password;
-    public String pseudo;
+    private String email;
+    private String password;
+    private String pseudo;
     private FirebaseAuth mAuth;
     //private FirebaseAuth.AuthStateListener mAuthListener;
     private static final String TAG = "WOS-Auth";
-    public EditText editEmail;
-    public EditText editPassword;
-    public EditText editPseudo;
-    public Button button;
-
-    public FirebaseDatabase database = FirebaseDatabase.getInstance();
-    DatabaseReference myRef = database.getReference();
+    private EditText editEmail;
+    private EditText editPassword;
+    private EditText editPseudo;
+    private Button button;
+    private FirebaseDatabase database = FirebaseDatabase.getInstance();
+    private DatabaseReference myRef = database.getReference();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -48,18 +47,17 @@ public class AuthActivity extends AppCompatActivity {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-            Log.i(TAG,"J'ai cliquer sur le bouton connexion");
+            Log.i(TAG,"Tentative de connexion...en cours..");
 
             email = editEmail.getText().toString();
             password = editPassword.getText().toString();
-
             pseudo = editPseudo.getText().toString();
 
             if(email.isEmpty() || password.isEmpty() || pseudo.isEmpty()){
-                Log.i(TAG,"champs vides");
+                Log.i(TAG,"les champs sont vides..");
             }
             else{
-                Log.i(TAG,"les champs sont rempli");
+                Log.i(TAG,"les champs sont bien rempli..");
 
                 mAuth.signInWithEmailAndPassword(email,password)
                     .addOnCompleteListener(AuthActivity.this, new OnCompleteListener<AuthResult>() {
@@ -67,16 +65,17 @@ public class AuthActivity extends AppCompatActivity {
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if(!task.isSuccessful()){
                                 //Erreur d'authentification
-                                Log.i(TAG,"Erreur d'authentification");
+                                Log.i(TAG,"Erreur d'authentification..");
                             }else{
-                                Log.i(TAG,"YOLOOOOOOOOO");
-                                //On ajout l'utilisateur dans notre Firebase
+                                Log.i(TAG,"YOLOOOOOOOOO !!");
+                                //Ajouter l'utilisateur dans notre Firebase
 
-                                //verifier si l'utilisateur existe en base de donnée
+                                //verifier si l'utilisateur existe en base de donnée - BenoitPart Sinon direction formulaire.
+
                                 String Uid = mAuth.getCurrentUser().getUid();
                                 User monUser = new User(pseudo);
-
                                 myRef.child("users").child(Uid).setValue(monUser);
+                                Log.i(TAG,"Utilisateur ajouté !!");
 
                                 Intent intent = new Intent(AuthActivity.this, MainActivity.class);
                                 startActivity(intent);
