@@ -73,7 +73,7 @@ public class AuthActivity extends AppCompatActivity {
                                 //verifier si l'utilisateur existe en base de donnée - BenoitPart Sinon direction formulaire.
 
                                 String Uid = mAuth.getCurrentUser().getUid();
-                                User monUser = new User(pseudo);
+                                User monUser = new User(pseudo,true);
                                 myRef.child("users").child(Uid).setValue(monUser);
                                 Log.i(TAG,"Utilisateur ajouté !!");
 

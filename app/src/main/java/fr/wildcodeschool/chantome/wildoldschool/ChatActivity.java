@@ -10,6 +10,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+
+import com.firebase.client.FirebaseError;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
@@ -17,7 +19,13 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.MutableData;
+import com.google.firebase.database.Transaction;
 import com.google.firebase.database.ValueEventListener;
+
+import java.security.Timestamp;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -38,7 +46,9 @@ public class ChatActivity extends AppCompatActivity{
     private Map<String,String> groupUsers= new HashMap<String, String>();
     private FirebaseRecyclerAdapter<Message, MessageViewHolder> mAdapter;
     private TextView introText;
-    private String chatName;
+    private String chatName, monTs;
+    private Long tsLong;
+    private LinearLayoutManager mLayoutManager;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -71,9 +81,12 @@ public class ChatActivity extends AppCompatActivity{
             }
         });
 
+        mLayoutManager = new LinearLayoutManager(ChatActivity.this);
+        //mLayoutManager.setReverseLayout(true);
+        mLayoutManager.setStackFromEnd(true);
         recycler = (RecyclerView) findViewById(R.id.conversation);
         recycler.setHasFixedSize(true);
-        recycler.setLayoutManager(new LinearLayoutManager(ChatActivity.this));
+        recycler.setLayoutManager(mLayoutManager);
 
         mAdapter = new FirebaseRecyclerAdapter<Message, MessageViewHolder>(
                 Message.class,
@@ -85,10 +98,16 @@ public class ChatActivity extends AppCompatActivity{
             protected void populateViewHolder(MessageViewHolder viewHolder, Message model, int position) {
                 viewHolder.nameText.setText(groupUsers.get(model.getUid().toString()));
                 viewHolder.messageText.setText(model.getMessage().toString());
+
+                long dv = Long.valueOf(model.getCreated_on().toString());// date value
+                Date df = new java.util.Date(dv);//date format
+                String vv = new SimpleDateFormat("dd/MM/yyyy - HH:mm").format(df);
+                viewHolder.time.setText(vv);
             }
         };
 
         recycler.setAdapter(mAdapter);
+        //recycler.scrollToPosition(mAdapter.getItemCount());
 
         send.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -102,13 +121,41 @@ public class ChatActivity extends AppCompatActivity{
                 temp_key = rootChatMessages.push().getKey().toString();
                 rootChatMessages.updateChildren(map);
 
+                //INCREMENTATION NBRS_MESSAGE
+                /*
+                rootChat.runTransaction(new Transaction.Handler() {
+                    @Override
+                    public Transaction.Result doTransaction(MutableData currentData) {
+                        if (currentData.child("nbrs_messages").getValue() == null) {
+                            currentData.child("nbrs_messages").setValue(1);
+                        } else {
+                            currentData.child("nbrs_messages").setValue((Long) currentData.getValue() + 1);
+                        }
+
+                        return Transaction.success(currentData.child("nbrs_messages"));
+                    }
+
+                    @Override
+                    public void onComplete(DatabaseError databaseError, boolean b, DataSnapshot dataSnapshot) {
+                        if (databaseError != null) {
+                            Log.i(TAG,"Firebase counter increment failed.");
+                        } else {
+                            Log.i(TAG,"Firebase counter increment succeeded.");
+                        }
+                    }
+                });*/
+
+                tsLong = System.currentTimeMillis();
+                monTs = tsLong.toString();
+
                 rootChatMessage = rootChatMessages.child(temp_key);
-                message = new Message(monUser,monMessage);
+                message = new Message(monUser,monMessage,monTs);
                 rootChatMessage.setValue(message);
                 Log.i(TAG,"c'est bon..");
 
 
                 //Efface le text du champs message aprés l'envoi de celui-ci
+                recycler.scrollToPosition(mAdapter.getItemCount());
                 editMessage.setText("");
                 Log.i(TAG,"on nettoit..");
             }
@@ -119,11 +166,13 @@ public class ChatActivity extends AppCompatActivity{
     private static class MessageViewHolder extends RecyclerView.ViewHolder {
         TextView nameText;
         TextView messageText;
+        TextView time;
 
         public MessageViewHolder(View v) {
             super(v);
             nameText = (TextView) v.findViewById(R.id.user);
             messageText = (TextView) v.findViewById(R.id.message);
+            time = (TextView) v.findViewById(R.id.date);
         }
     }
 

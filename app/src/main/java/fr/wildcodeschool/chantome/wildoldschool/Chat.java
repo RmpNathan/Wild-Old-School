@@ -19,19 +19,20 @@ public class Chat implements Serializable{
     private boolean access;
     private Date lastOpen;
     private int nbrs_messages;
-    private Date created_on;
+    private String created_on;
 
     public Chat(){
 
     }
 
-    public Chat(String name, String author,String desc, boolean status, boolean access, Map<String,String> groupUser){
+    public Chat(String name, String author,String desc, boolean status, boolean access, Map<String,String> groupUser,String created_on){
         setName(name);
         setAuthor(author);
         setDesc(desc);
         setStatus(status);
         setAccess(access);
         setGroupUser(groupUser);
+        setCreated_on(created_on);
     }
 
     //setters
@@ -45,7 +46,7 @@ public class Chat implements Serializable{
     public void setAccess(boolean access){this.access=access;}
     public void setLastOpen(Date lastOpen){this.lastOpen=lastOpen;}
     public void setNbrs_messages(int nbrs_messages){this.nbrs_messages=nbrs_messages;}
-    public void setCreated_on(Date created_on){this.created_on=created_on;}
+    public void setCreated_on(String created_on){this.created_on=created_on;}
 
     //getters
     public String getName(){return this.name;}
@@ -58,6 +59,6 @@ public class Chat implements Serializable{
     public boolean isAccess(){return this.access;}
     public Date getLastOpen(){return this.lastOpen;}
     public int getNbrs_messages(){return this.nbrs_messages;}
-    public Date getCreated_on(){return this.created_on;}
+    public String getCreated_on(){return this.created_on;}
 
 }

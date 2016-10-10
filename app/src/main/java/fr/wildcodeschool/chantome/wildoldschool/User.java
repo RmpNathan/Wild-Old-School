@@ -8,9 +8,9 @@ import java.util.Map;
  */
 public class User{
     private String email;
-    private String firstname;
-    private String lastname;
-    private String genre;
+    private String firstname;//*
+    private String lastname;//*
+    private String genre;//*
     private int age;
     private String desc;
     private int photo;
@@ -20,7 +20,7 @@ public class User{
     private boolean writing;
     private int profil_complete;
     private Map<String,Chat> created_chats;
-    private Map<String,Chat> list_added_chats;
+    private Map<String,Integer> list_added_chats;
     private String adresse;
     private String ecole_wcs;
     private String formation;
@@ -30,6 +30,11 @@ public class User{
 
     public User(String firstname){
         setFirstname(firstname);
+    }
+
+    public User(String firstname, boolean online){
+        setFirstname(firstname);
+        setOnline(online);
     }
 
     //setter
@@ -85,7 +90,7 @@ public class User{
         this.created_chats = created_chats;
     }
 
-    public void setList_added_chats(Map<String, Chat> list_added_chats) {
+    public void setList_added_chats(Map<String, Integer> list_added_chats) {
         this.list_added_chats = list_added_chats;
     }
 
@@ -155,7 +160,7 @@ public class User{
         return this.created_chats;
     }
 
-    public Map<String, Chat> getList_added_chats() {
+    public Map<String, Integer> getList_added_chats() {
         return this.list_added_chats;
     }
 

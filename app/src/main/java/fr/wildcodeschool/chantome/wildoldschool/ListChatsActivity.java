@@ -23,7 +23,11 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
+
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -31,7 +35,6 @@ import java.util.Map;
  * Created by chantome on 27/09/2016.
  */
 public class ListChatsActivity extends AppCompatActivity{
-
     private String chatName,chatDesc,temp_key,current_id, userkey,chatKey,meh;
     private Button createBtn, btnDeco;
     private FirebaseAuth Auth;
@@ -43,12 +46,14 @@ public class ListChatsActivity extends AppCompatActivity{
     private User user;
     private Map<String ,User> users = new HashMap<String,User>();
     private ArrayList<Chat> mesChats = new ArrayList<Chat>();
-    ArrayList<String> chatKeys= new ArrayList<String>();
+    private ArrayList<String> chatKeys= new ArrayList<String>();
     private Map<String,String> groupUsers = new HashMap<String,String>();
     private DatabaseReference root = FirebaseDatabase.getInstance().getReference().getRoot();
     private DatabaseReference rootChats = FirebaseDatabase.getInstance().getReference().child("chats");
     private int count;
     private ListView list;
+    private Long tsLong;
+    private String ts;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -67,18 +72,23 @@ public class ListChatsActivity extends AppCompatActivity{
         getUsers();
         getChatKeys();
 
+        //rootChats.orderByKey().equalTo(true,"status");
+
         //Afficher ma liste de Chats ATTENTION Va falloir faire une REQUETE !!
         FirebaseListAdapter<Chat> fireadapter = new FirebaseListAdapter<Chat>(
                 ListChatsActivity.this,
                 Chat.class,
                 R.layout.list_chats,
-                rootChats//ICI
+                rootChats.orderByChild("status").equalTo(true)//ICI
         ) {
             @Override
             protected void populateView(View v, Chat model, int position) {
                 Log.i(TAG, "populateView..");
+                Log.i(TAG, "Chat key.."+chatKeys.get(position).toString());
+
+
                 // Status:true= OUVERT ; Access:true = PRIVEE  <--- Tiens, ca ressemble presque à une requete
-                if(model.isStatus() == true && model.isAccess() == false){
+                //if(model.isStatus() == true && model.isAccess() == false){
 
                     //Je veux afficher que mes chats PUBLIQUE et OUVERT
                     //DONC SI Status = TRUE && Access = FALSE ( Cherche pas t'as tords )
@@ -94,7 +104,10 @@ public class ListChatsActivity extends AppCompatActivity{
                     monGroupUser = model.getGroupUser();
                     Log.i(TAG, "Données récupérer.. on fait quoi maintenant ?..");
 
-                    Chat monChat = new Chat(monName, monAuthor, maDesc, monStatus, monAccess, monGroupUser);
+                    String monTs = (String) model.getCreated_on().toString();
+                    Log.i(TAG,"monTS = "+monTs);
+
+                    Chat monChat = new Chat(monName, monAuthor, maDesc, monStatus, monAccess, monGroupUser,monTs);
 
                     Log.i(TAG, "J'ajoute mon Chat dans ma Collection de chats..");
                     mesChats.add(monChat);
@@ -105,9 +118,9 @@ public class ListChatsActivity extends AppCompatActivity{
                     txtName.setText(model.getName().toString());
                     txtDesc.setText(model.getDesc().toString());
                     Log.i(TAG, "Et on envoi ! Next !?");
-                }else{
-                    Log.i(TAG,"Chat par défaut..");
-                }
+                //}else{
+                //    Log.i(TAG,"Chat par défaut..");
+                //}
 
             }
         };
@@ -145,6 +158,7 @@ public class ListChatsActivity extends AppCompatActivity{
             @Override
             public void onClick(View v) {
                 Log.i(TAG,"Merci Tchusss..");
+                users.get(current_id).setOnline(false);
                 Auth.signOut();
                 mainActivite = new Intent(ListChatsActivity.this, MainActivity.class);
                 startActivity(mainActivite);
@@ -286,7 +300,11 @@ public class ListChatsActivity extends AppCompatActivity{
                 meh = users.get(current_id).getFirstname();
                 groupUsers.put(current_id,meh);
 
-                Chat monChat = new Chat(chatName,current_id,chatDesc,status,access,groupUsers);
+                tsLong = System.currentTimeMillis();
+                ts = tsLong.toString();
+                Log.i(TAG,"Time : "+ts);
+
+                Chat monChat = new Chat(chatName,current_id,chatDesc,status,access,groupUsers,ts);
                 rootChat.setValue(monChat);
                 Log.i(TAG,"Chat Crée..");
                 //rootChat.updateChildren(map2);
