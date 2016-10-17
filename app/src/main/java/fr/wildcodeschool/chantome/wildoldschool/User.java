@@ -10,6 +10,7 @@ public class User{
     private String email;
     private String firstname;//*
     private String lastname;//*
+    private String pseudo;
     private String genre;//*
     private int age;
     private String desc;
@@ -28,8 +29,8 @@ public class User{
     public User(){
     }
 
-    public User(String firstname){
-        setFirstname(firstname);
+    public User(String pseudo){
+        setPseudo(pseudo);
     }
 
     public User(String firstname, boolean online){
@@ -45,6 +46,8 @@ public class User{
     public void setFirstname(String firstname) {
         this.firstname = firstname;
     }
+
+    public void setPseudo(String pseudo){ this.pseudo = pseudo; }
 
     public void setLastname(String lastname) {
         this.lastname = lastname;
@@ -115,6 +118,8 @@ public class User{
     public String getFirstname() {
         return this.firstname;
     }
+
+    public String getPseudo(){ return this.pseudo; }
 
     public String getLastname() {
         return this.lastname;

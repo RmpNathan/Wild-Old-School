@@ -30,6 +30,8 @@ public class AuthActivity extends AppCompatActivity {
     private EditText editPassword;
     private EditText editPseudo;
     private Button button;
+    private Button btnRegister;
+
     private FirebaseDatabase database = FirebaseDatabase.getInstance();
     private DatabaseReference myRef = database.getReference();
 
@@ -41,8 +43,9 @@ public class AuthActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         editEmail = (EditText) findViewById(R.id.email_address);
         editPassword = (EditText) findViewById(R.id.password);
-        editPseudo = (EditText) findViewById(R.id.pseudo);
         button = (Button) findViewById(R.id.connect);
+        btnRegister = (Button) findViewById(R.id.registerbtn);
+
 
         button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -86,5 +89,18 @@ public class AuthActivity extends AppCompatActivity {
                 }
                 }
             });
+
+
+        btnRegister.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent2 = new Intent(AuthActivity.this, SignupActivity.class);
+                startActivity(intent2);
+                finish();
+            }
+        });
+
     }
+
+
 }

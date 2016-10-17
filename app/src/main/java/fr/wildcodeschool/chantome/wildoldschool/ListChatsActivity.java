@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.text.Layout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,19 +16,16 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.TextView;
+
 import com.firebase.ui.database.FirebaseListAdapter;
-import com.google.firebase.FirebaseOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
-import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -135,7 +131,7 @@ public class ListChatsActivity extends AppCompatActivity{
                 Log.i(TAG,"onItemClick..");
                 Log.i(TAG,"ID.."+chatKeys.get(position).toString());
                 //verifier si l'utilisateur existe en base de donnée - a faire
-
+                Log.i(TAG,users.get(current_id).getFirstname().toString());
                 //On ajout l'utilisateur dans le Group
                 rootChats.child(chatKeys.get(position).toString()).child("groupUser").child(current_id).setValue(users.get(current_id).getFirstname().toString());
 
