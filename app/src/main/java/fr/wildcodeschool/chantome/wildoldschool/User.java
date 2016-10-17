@@ -20,7 +20,7 @@ public class User{
     private boolean writing;
     private int profil_complete;
     private Map<String,Chat> created_chats;
-    private Map<String,Integer> list_added_chats;
+    private Map<String,String> list_added_chats;
     private String adresse;
     private String ecole_wcs;
     private String formation;
@@ -90,7 +90,7 @@ public class User{
         this.created_chats = created_chats;
     }
 
-    public void setList_added_chats(Map<String, Integer> list_added_chats) {
+    public void setList_added_chats(Map<String, String> list_added_chats) {
         this.list_added_chats = list_added_chats;
     }
 
@@ -160,7 +160,7 @@ public class User{
         return this.created_chats;
     }
 
-    public Map<String, Integer> getList_added_chats() {
+    public Map<String, String> getList_added_chats() {
         return this.list_added_chats;
     }
 

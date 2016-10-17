@@ -1,5 +1,6 @@
 package fr.wildcodeschool.chantome.wildoldschool;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -103,6 +104,7 @@ public class ChatActivity extends AppCompatActivity{
                 Date df = new java.util.Date(dv);//date format
                 String vv = new SimpleDateFormat("dd/MM/yyyy - HH:mm").format(df);
                 viewHolder.time.setText(vv);
+                recycler.scrollToPosition(mAdapter.getItemCount());
             }
         };
 
@@ -204,6 +206,46 @@ public class ChatActivity extends AppCompatActivity{
                 Log.i(TAG,databaseError.getMessage());
             }
         });
+    }
+
+    public void onBackPressed() {
+        Log.i(TAG, "onBackPressed Called");
+
+        Map<String,String> map = new HashMap<String, String>();
+
+        rootChatMessages.orderByKey().limitToLast(1).addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                Log.i(TAG,"1:Last Message Date : "+dataSnapshot.child("message").getValue().toString());
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                Log.i(TAG,"2:Last Message Date : "+dataSnapshot.child("message").getValue().toString());
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.i(TAG,"Meh !! "+databaseError.getMessage().toString());
+            }
+        });
+
+        //map.put(monChat,);
+        Log.i(TAG,"Activity !");
+        //Intent chatsActivite = new Intent(ChatActivity.this, ListChatsActivity.class);
+        //startActivity(chatsActivite);
+        Log.i(TAG,"Return !");
+        finish();
     }
 
 }

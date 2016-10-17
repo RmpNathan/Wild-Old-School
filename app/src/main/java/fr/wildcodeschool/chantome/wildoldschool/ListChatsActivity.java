@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Layout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,6 +18,7 @@ import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.TextView;
 import com.firebase.ui.database.FirebaseListAdapter;
+import com.google.firebase.FirebaseOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -131,16 +133,18 @@ public class ListChatsActivity extends AppCompatActivity{
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Log.i(TAG,"onItemClick..");
+                Log.i(TAG,"ID.."+chatKeys.get(position).toString());
                 //verifier si l'utilisateur existe en base de donnée - a faire
 
+                //On ajout l'utilisateur dans le Group
                 rootChats.child(chatKeys.get(position).toString()).child("groupUser").child(current_id).setValue(users.get(current_id).getFirstname().toString());
 
                 //Envoi mon objet monstre selectionné vers l'activité details
-                Intent secondeActivite = new Intent(ListChatsActivity.this, ChatActivity.class);
+                Intent chatActivite = new Intent(ListChatsActivity.this, ChatActivity.class);
                 Bundle mBundle = new Bundle();
                 mBundle.putString("chatKey",chatKeys.get(position).toString());
-                secondeActivite.putExtras(mBundle);
-                startActivity(secondeActivite);
+                chatActivite.putExtras(mBundle);
+                startActivity(chatActivite);
                 Log.i(TAG,"Direction le chat..");
                 //finish ?
             }
@@ -153,6 +157,8 @@ public class ListChatsActivity extends AppCompatActivity{
             }
         });
 
+
+
         //Déconnexion de l'utilisateur
         btnDeco.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -164,6 +170,10 @@ public class ListChatsActivity extends AppCompatActivity{
                 startActivity(mainActivite);
             }
         });
+    }
+
+    public  void addUserToGroup(String idUser, String nameUser){
+
     }
 
     public void getChatKeys(){
@@ -297,6 +307,7 @@ public class ListChatsActivity extends AppCompatActivity{
                 //on ajout les variable dans le message qui a pour clé temp_key
                 DatabaseReference rootChat = rootChats.child(temp_key);
 
+                //Ajout de l'auteur dans le group
                 meh = users.get(current_id).getFirstname();
                 groupUsers.put(current_id,meh);
 
@@ -307,7 +318,7 @@ public class ListChatsActivity extends AppCompatActivity{
                 Chat monChat = new Chat(chatName,current_id,chatDesc,status,access,groupUsers,ts);
                 rootChat.setValue(monChat);
                 Log.i(TAG,"Chat Crée..");
-                //rootChat.updateChildren(map2);
+                getChatKeys();
             }
         });
 
