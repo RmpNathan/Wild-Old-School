@@ -23,6 +23,7 @@ import com.google.firebase.database.FirebaseDatabase;
 //test commit sans conflit
 public class AuthActivity extends AppCompatActivity {
     private String test1;
+    private String test3;
     private String email;
     private String password;
     private String pseudo;
