@@ -20,6 +20,7 @@ import com.google.firebase.database.FirebaseDatabase;
  */
 //TEST COMMIT Nathan v1.0
 //Test commit personne2
+//test commit sans conflit
 public class AuthActivity extends AppCompatActivity {
 
     private String email;
