@@ -22,10 +22,6 @@ import com.google.firebase.database.FirebaseDatabase;
 //Test commit personne2
 //test commit sans conflit
 public class AuthActivity extends AppCompatActivity {
-    
-    private int testcom;
-
-    private String testCommit;
     private String email;
     private String password;
     private String pseudo;
