@@ -18,7 +18,7 @@ import com.google.firebase.database.FirebaseDatabase;
 /**
  * Created by chantome on 21/09/2016.
  */
-//TEST COMMIT NATHAN
+//TEST COMMIT NATHAN v1.0
 public class AuthActivity extends AppCompatActivity {
 
     private String email;
