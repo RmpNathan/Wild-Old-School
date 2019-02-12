@@ -25,6 +25,7 @@ public class AuthActivity extends AppCompatActivity {
     
     private int testcom;
 
+    private String testCommit;
     private String email;
     private String password;
     private String pseudo;
